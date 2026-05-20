@@ -475,7 +475,6 @@ function render(){
     setUI('#2a2040','Letanías Lauretanas','✦ Letanías · '+(li+1)+' de '+lets.length+' ✦', true);
     const page = div({class:'page', style:'gap:8px'});
     page.appendChild(div({class:'section-title', style:'font-size:clamp(14px,2.4vw,26px)'}, 'Letanías Lauretanas'));
-    page.appendChild(p({style:'font-size:clamp(9px,1.3vw,13px);color:var(--gold);font-style:italic;margin-bottom:4px'}, 'R. Ruega por nosotros'));
     const SHOW=9, start=Math.max(0,li-3), end=Math.min(lets.length,start+SHOW);
     const list = div({class:'let-list'});
     for(let i=start;i<end;i++){
