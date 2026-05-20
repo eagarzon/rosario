@@ -5,122 +5,91 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>El Santo Rosario</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  :root{
-    --navy:#0D1B2A;--navy2:#132236;--navy3:#1A2C42;
-    --gold:#C9A84C;--goldL:#E8C97A;--cream:#F5EDD6;
-    --gray:#8FA3B1;--dim:#1A2C42;
-    --g-green:#2E7D32;--g-greenL:#66BB6A;
-    --g-blue:#1565C0;--g-blueL:#5B9BD5;
-    --g-purple:#6A1F7A;--g-purpleL:#AB47BC;
-    --g-red:#8B1A1A;--g-redL:#E53935;
-  }
-  html{height:100%;height:-webkit-fill-available}
-  body{min-height:100%;min-height:-webkit-fill-available;overflow:hidden;background:var(--navy);color:var(--cream);font-family:system-ui,sans-serif;touch-action:none;display:flex;flex-direction:column}
-  .screen{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2vw;opacity:0;pointer-events:none;transition:opacity .35s;-webkit-overflow-scrolling:touch}
-  .screen.active{opacity:1;pointer-events:all}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#0D1B2A;--navy2:#132236;--navy3:#1A2C42;
+  --gold:#C9A84C;--goldL:#E8C97A;--cream:#F5EDD6;--gray:#8FA3B1;--dim:#1A2C42;
+}
+html,body{height:100%;overflow:hidden;background:var(--navy);color:var(--cream);font-family:system-ui,sans-serif;touch-action:none}
+#shell{position:fixed;inset:0;display:flex;flex-direction:column}
+#topbar{height:36px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;letter-spacing:.04em;flex-shrink:0;position:relative}
+#homeBtn{position:absolute;left:0;top:0;height:36px;padding:0 14px;display:flex;align-items:center;cursor:pointer;color:rgba(255,255,255,.75);font-size:18px;background:transparent;border:none}
+#progress-wrap{height:3px;background:rgba(255,255,255,.1);flex-shrink:0}
+#progress{height:100%;background:var(--gold);transition:width .4s;width:0%}
+#main{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 16px;-webkit-overflow-scrolling:touch}
+#bottombar{height:28px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--navy);letter-spacing:.06em;flex-shrink:0}
 
-  /* topbar */
-  .topbar{position:absolute;top:0;left:0;right:0;height:36px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;letter-spacing:.04em;z-index:10}
-  .home-btn{position:absolute;top:0;left:0;height:36px;padding:0 14px;display:flex;align-items:center;cursor:pointer;color:rgba(255,255,255,.75);font-size:18px;z-index:11;background:transparent;border:none}
-  .home-btn:active{color:#fff}
+/* Typography */
+.big-title{font-family:Georgia,serif;font-size:clamp(28px,6vw,68px);color:var(--gold);font-weight:700;text-align:center;letter-spacing:.04em;line-height:1.1}
+.section-title{font-family:Georgia,serif;font-size:clamp(18px,3.5vw,40px);color:var(--gold);font-weight:700;text-align:center;margin-bottom:12px}
+.prayer-title{font-family:Georgia,serif;font-size:clamp(14px,2.4vw,26px);color:var(--goldL);font-weight:700;text-align:center;margin-bottom:8px}
+.prayer-text{font-size:clamp(12px,2vw,21px);color:var(--cream);line-height:1.65;max-width:min(820px,90vw);width:100%}
+.sub-title{font-family:Georgia,serif;font-size:clamp(12px,2vw,22px);color:var(--cream);font-style:italic;text-align:center;margin-top:6px}
+.divider{width:60%;max-width:320px;height:1px;background:var(--gold);margin:12px auto;opacity:.6}
 
-  /* progress bar */
-  .progress-wrap{position:absolute;top:36px;left:0;right:0;height:3px;background:rgba(255,255,255,.1);z-index:9}
-  .progress-fill{height:100%;background:var(--gold);transition:width .4s;width:0%}
+/* Buttons */
+.btn{background:var(--gold);color:var(--navy);border:none;border-radius:6px;padding:14px clamp(24px,5vw,56px);font-size:clamp(13px,2vw,20px);font-weight:700;cursor:pointer}
+.btn-ghost{background:transparent;border:1.5px solid var(--gold);color:var(--gold);border-radius:6px;padding:10px clamp(16px,3vw,36px);font-size:clamp(11px,1.6vw,17px);font-weight:600;cursor:pointer}
 
-  /* bottombar */
-  .bottombar{position:absolute;bottom:0;left:0;right:0;height:28px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--navy);letter-spacing:.06em}
+/* Tipo grid */
+.tipo-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,1.5vw,16px);max-width:min(580px,88vw);width:100%;margin:8px 0}
+.tipo-btn{border:none;border-radius:8px;padding:14px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tipo-btn .tname{font-family:Georgia,serif;font-size:clamp(14px,2.4vw,24px);color:#fff;font-weight:700}
+.tipo-btn .tdays{font-size:clamp(9px,1.3vw,13px);color:rgba(255,255,255,.8);font-style:italic}
+.tipo-btn .hoy-badge{font-size:10px;background:rgba(255,255,255,.25);border-radius:4px;padding:1px 6px;color:#fff}
 
-  /* cross */
-  .cross{width:clamp(28px,5vw,48px);height:clamp(36px,6.5vw,60px);position:relative;margin-bottom:12px}
-  .cross::before{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);width:32%;height:100%;background:var(--gold)}
-  .cross::after{content:'';position:absolute;top:36%;left:0;right:0;height:28%;background:var(--gold)}
+/* Cruz */
+.cross{width:36px;height:50px;position:relative;margin-bottom:10px;flex-shrink:0}
+.cross::before{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);width:32%;height:100%;background:var(--gold)}
+.cross::after{content:'';position:absolute;top:36%;left:0;right:0;height:28%;background:var(--gold)}
 
-  /* titles */
-  .big-title{font-family:Georgia,serif;font-size:clamp(28px,6vw,72px);color:var(--gold);font-weight:700;text-align:center;letter-spacing:.04em;line-height:1.1}
-  .sub-title{font-family:Georgia,serif;font-size:clamp(13px,2.2vw,24px);color:var(--cream);font-style:italic;text-align:center;margin-top:6px}
-  .section-title{font-family:Georgia,serif;font-size:clamp(18px,3.5vw,42px);color:var(--gold);font-weight:700;text-align:center;margin-bottom:12px}
-  .section-sub{font-size:clamp(10px,1.6vw,16px);color:var(--gray);text-align:center;margin-bottom:16px}
-  .prayer-text{font-size:clamp(12px,2vw,22px);color:var(--cream);text-align:justify;line-height:1.65;max-width:min(820px,90vw);width:100%}
-  .prayer-title{font-family:Georgia,serif;font-size:clamp(14px,2.4vw,28px);color:var(--goldL);font-weight:700;text-align:center;margin-bottom:8px}
-  .divider{width:60%;max-width:320px;height:1px;background:var(--gold);margin:12px auto;opacity:.6}
+/* Misterio card */
+.mist-card{background:var(--navy3);border-radius:10px;padding:clamp(12px,2.5vw,28px);max-width:min(860px,92vw);width:100%;border:1px solid rgba(201,168,76,.25)}
+.mist-head{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.mist-num{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0}
+.mist-title{font-family:Georgia,serif;font-size:clamp(14px,2.4vw,26px);color:var(--gold);font-weight:700;line-height:1.2}
+.mist-sub{font-size:clamp(9px,1.2vw,13px);color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.mist-med{font-size:clamp(12px,1.9vw,20px);color:var(--cream);line-height:1.6;text-align:justify}
+.mist-fruto{margin-top:12px;padding:10px 14px;background:rgba(0,0,0,.2);border-radius:6px;border-left:3px solid var(--gold);font-size:clamp(10px,1.5vw,15px);color:var(--gray)}
 
-  /* btn */
-  .btn{background:var(--gold);color:var(--navy);border:none;border-radius:6px;padding:14px clamp(24px,5vw,56px);font-size:clamp(13px,2vw,22px);font-weight:700;cursor:pointer;letter-spacing:.03em;transition:opacity .2s}
-  .btn:active{opacity:.8}
-  .btn-ghost{background:transparent;border:1.5px solid var(--gold);color:var(--gold);border-radius:6px;padding:11px clamp(16px,3vw,36px);font-size:clamp(11px,1.6vw,18px);font-weight:600;cursor:pointer;transition:opacity .2s}
-  .btn-ghost:active{opacity:.7}
+/* Cuentas */
+.cuentas-row{display:flex;gap:clamp(5px,1.2vw,14px);align-items:center;justify-content:center;margin:12px 0;flex-wrap:wrap}
+.cuenta{width:clamp(26px,4.5vw,48px);height:clamp(26px,4.5vw,48px);border-radius:50%;border:2px solid var(--gold);background:var(--navy3);display:flex;align-items:center;justify-content:center;font-size:clamp(10px,1.5vw,15px);font-weight:700;color:var(--gray);transition:background .25s,color .25s,border-color .25s}
+.cuenta.marcada{color:#fff}
 
-  /* misterio type buttons */
-  .tipo-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,1.5vw,20px);max-width:min(700px,92vw);width:100%;margin:16px 0}
-  .tipo-btn{border:none;border-radius:8px;padding:14px clamp(12px,2vw,24px);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .2s}
-  .tipo-btn:active{opacity:.8}
-  .tipo-btn .tname{font-family:Georgia,serif;font-size:clamp(14px,2.4vw,26px);color:#fff;font-weight:700}
-  .tipo-btn .tdays{font-size:clamp(9px,1.3vw,14px);color:rgba(255,255,255,.8);font-style:italic}
+/* Letanias */
+.let-list{max-width:min(900px,94vw);width:100%;display:flex;flex-direction:column}
+.let-row{display:flex;align-items:center;gap:12px;padding:5px 12px;border-radius:6px;transition:background .2s}
+.let-row.activa{background:rgba(201,168,76,.12)}
+.let-marker{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--gold);background:transparent;flex-shrink:0;transition:background .25s}
+.let-marker.on{background:var(--gold)}
+.let-inv{font-size:clamp(11px,1.8vw,19px);color:var(--cream);flex:1}
+.let-resp{font-size:clamp(9px,1.4vw,15px);color:var(--goldL);font-style:italic}
 
-  /* cuenta row */
-  .cuentas-row{display:flex;gap:clamp(6px,1.5vw,18px);align-items:center;justify-content:center;margin:16px 0}
-  .cuenta{width:clamp(28px,5vw,52px);height:clamp(28px,5vw,52px);border-radius:50%;border:2px solid var(--acL,var(--gold));background:var(--navy3);display:flex;align-items:center;justify-content:center;font-size:clamp(10px,1.6vw,16px);font-weight:700;color:var(--gray);transition:background .25s,color .25s}
-  .cuenta.marcada{background:var(--ac,var(--gold));color:#fff;border-color:var(--acL,var(--goldL))}
+/* Nav hint */
+#navhint{position:fixed;bottom:32px;left:0;right:0;text-align:center;font-size:11px;color:var(--gray);pointer-events:none;opacity:.7}
 
-  /* letania row */
-  .let-list{max-width:min(900px,94vw);width:100%;display:flex;flex-direction:column;gap:0}
-  .let-row{display:flex;align-items:center;gap:clamp(8px,1.5vw,16px);padding:6px clamp(10px,2vw,18px);border-radius:6px;transition:background .2s}
-  .let-row.activa{background:rgba(201,168,76,.12)}
-  .let-marker{width:clamp(10px,1.8vw,16px);height:clamp(10px,1.8vw,16px);border-radius:50%;border:1.5px solid var(--gold);background:transparent;flex-shrink:0;transition:background .25s}
-  .let-marker.on{background:var(--gold)}
-  .let-inv{font-size:clamp(11px,1.8vw,20px);color:var(--cream);flex:1}
-  .let-resp{font-size:clamp(9px,1.4vw,16px);color:var(--goldL);font-style:italic;flex-shrink:0}
-
-  /* misterio card */
-  .mist-card{background:var(--navy3);border-radius:10px;padding:clamp(12px,2.5vw,32px);max-width:min(860px,92vw);width:100%;border:1px solid rgba(201,168,76,.25)}
-  .mist-num{width:clamp(36px,6vw,60px);height:clamp(36px,6vw,60px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(14px,2.2vw,22px);font-weight:700;color:#fff;flex-shrink:0}
-  .mist-head{display:flex;align-items:center;gap:clamp(8px,1.5vw,18px);margin-bottom:12px}
-  .mist-title{font-family:Georgia,serif;font-size:clamp(14px,2.4vw,28px);color:var(--gold);font-weight:700;line-height:1.2}
-  .mist-sub{font-size:clamp(9px,1.3vw,14px);color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
-  .mist-med{font-size:clamp(12px,1.9vw,21px);color:var(--cream);line-height:1.6;text-align:justify}
-  .mist-fruto{margin-top:12px;padding:clamp(8px,1.5vw,16px);background:rgba(0,0,0,.2);border-radius:6px;border-left:3px solid var(--ac,var(--gold));font-size:clamp(10px,1.5vw,16px);color:var(--gray)}
-  .mist-fruto b{color:var(--goldL)}
-
-  /* nav hint */
-  .nav-hint{position:fixed;bottom:32px;left:0;right:0;text-align:center;font-size:clamp(8px,1.2vw,13px);color:var(--gray);pointer-events:none;opacity:.7}
-
-  /* responsive scroll for overflow */
-  .scroll-area{overflow-y:auto;-webkit-overflow-scrolling:touch;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:12px 16px;flex:1}
-  .scroll-area.centered{justify-content:center}
-
-  /* trio (gloria/jac/fatima) */
-  .trio-block{max-width:min(820px,92vw);width:100%;display:flex;flex-direction:column;gap:16px}
-  .trio-item{text-align:center}
-  .trio-item .prayer-text{text-align:center}
-
-  /* intenciones*/
-  .int-aves{display:flex;flex-direction:column;gap:8px;max-width:min(820px,92vw);width:100%}
-  .int-ave-row{display:flex;align-items:center;gap:1vw}
-  .int-circle{width:clamp(20px,3.5vw,36px);height:clamp(20px,3.5vw,36px);border-radius:50%;border:1.5px solid var(--gold);background:var(--navy3);display:flex;align-items:center;justify-content:center;font-size:clamp(9px,1.3vw,14px);font-weight:700;color:var(--gray);transition:background .25s,color .25s;flex-shrink:0}
-  .int-circle.on{background:var(--gold);color:var(--navy)}
-
-  @media(orientation:portrait){
-    .tipo-grid{grid-template-columns:1fr 1fr}
-    .cuentas-row{gap:clamp(4px,2vw,14px)}
-    .let-resp{display:none}
-  }
+/* Page layout helpers */
+.page{display:flex;flex-direction:column;align-items:center;width:100%;gap:10px}
+.page.centered{justify-content:center;min-height:100%}
 </style>
 </head>
 <body>
-
-<div class="topbar" id="topbar"></div>
-<div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
-<div class="bottombar" id="bottombar">✦ Ad Maiorem Dei Gloriam ✦</div>
-<div class="nav-hint" id="navhint">Toca, presiona Enter o desliza para avanzar</div>
-
-<button class="home-btn" id="homeBtn" title="Ir al inicio" onclick="irAlInicio()" style="display:none">⌂</button>
-<div id="app" style="position:absolute;top:0;left:0;right:0;bottom:0;"></div>
+<div id="shell">
+  <div id="topbar">
+    <button id="homeBtn" onclick="irAlInicio()" style="display:none">⌂</button>
+    <span id="topLabel"></span>
+  </div>
+  <div id="progress-wrap"><div id="progress"></div></div>
+  <div id="main"></div>
+  <div id="bottombar"><span id="botLabel">✦ Ad Maiorem Dei Gloriam ✦</span></div>
+</div>
+<div id="navhint">Toca, presiona Enter o desliza para avanzar</div>
 
 <script>
 const DATA = {
   misterios:{
+
     Gozosos:{ac:'#2E7D32',acL:'#66BB6A',dias:'Lunes y Sábado',
       frutos:['La humildad','La caridad fraterna','El desprendimiento','La obediencia y la pobreza','El amor a Dios'],
       lista:[
@@ -140,7 +109,7 @@ const DATA = {
         {num:'V',  titulo:'La Institución de la Eucaristía',med:'En la Última Cena, Jesús toma el pan y el vino: «Ésto es mi Cuerpo... ésta es mi Sangre». Instituye el sacerdocio y deja la Eucaristía como memorial perpetuo de su amor.'},
       ]},
     Dolorosos:{ac:'#6A1F7A',acL:'#AB47BC',dias:'Martes y Viernes',
-      frutos:['La contrición','La mortificación','La corona de virtudes','La paciencia en el sufrimiento','La perseverancia'],
+      frutos:['La obediencia','La mortificación','La humildad','La paciencia en el sufrimiento','La perseverancia'],
       lista:[
         {num:'I',  titulo:'La Oración de Jesús en el Huerto',med:'En Getsemaní, Jesús ora al Padre con angustia mortal y suda sangre. Sin embargo, entrega su voluntad: «No se haga la mía, sino la tuya».'},
         {num:'II', titulo:'La Flagelación de Jesús',med:'Jesús es atado a la columna y azotado sin piedad. Ofrece en silencio su sangre y su dolor por la redención de nuestros pecados y la conversión de los pecadores.'},
@@ -157,506 +126,449 @@ const DATA = {
         {num:'IV', titulo:'La Asunción de María al Cielo',med:'Terminado el curso de su vida terrena, la Virgen María es asunta en cuerpo y alma a la gloria celestial. Es signo de esperanza y consuelo para los peregrinos en la tierra.'},
         {num:'V',  titulo:'La Coronación de María como Reina',med:'María es coronada Reina del cielo y de la tierra por la Santísima Trinidad, exaltada por encima de todos los ángeles y santos como Madre e intercesora de la humanidad.'},
       ]},
+  
   },
   oraciones:{
+
     senial:'Por la señal de la santa Cruz, de nuestros enemigos, líbranos, Señor, Dios nuestro. <br> En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.',
     contriccion:'Señor mío Jesucristo, Dios y hombre verdadero, creador, padre, y redentor mío. Por ser tú quien eres, y porque te amo sobre todas las cosas, me pesa de todo corazón haberte ofendido. Quiero y propongo firmemente nunca más pecar, enmendarme, confesarme, y cumplir la penitencia que me fuere impuesta. Te ofrezco, Señor, mi vida, obras, y trabajos, en reparación de todos mis pecados. Y así como te suplico, así confío en tu bondad y misericordia infinitas, que me los perdonarás, y me darás las gracias necesarias para nunca más pecar. Amén.',
-    padreNuestro:'Padre nuestro, que estás en el cielo, santificado sea tu nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.',
-    aveMaria:'Dios te salve, María, llena eres de gracia, el Señor está contigo. Bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. <br>Santa María, Madre de Dios, ruega por nosotros pecadores, ahora y en la hora de nuestra muerte. Amén.',
+    padreNuestro:'Padre nuestro, que estás en el cielo,<br>santificado sea tu nombre,<br>venga a nosotros tu reino,<br>hágase tu voluntad en la tierra como en el cielo.<br><br>Danos hoy nuestro pan de cada día<br>perdona nuestras ofensas,<br>como también nosotros perdonamos a los que nos ofenden<br>no nos dejes caer en la tentación, y líbranos del mal.<br>Amén.',
+    aveMaria:'Dios te salve, María, llena eres de gracia, el Señor está contigo.<br>Bendita tú eres entre todas las mujeres,<br>y bendito es el fruto de tu vientre, Jesús.<br><br>Santa María, Madre de Dios,<br>ruega por nosotros pecadores,<br>ahora y en la hora de nuestra muerte.<br>Amén.',
     gloria:'Gloria al Padre, y al Hijo, y al Espíritu Santo.<br>Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.',
-    jaculatoria:'Por tu limpia concepción ¡Oh soberana princesa!<br>R. Una muy grande pureza te pido de corazón.',
-    jaculatoria2:'María, Madre de Gracia y Madre de Misericordia.<br>R. En la vida y en la muerte ampáranos Gran Señora.',
-    jaculatoria3:'Ave, María Purísima.<br>R. Sin pecado concebida.',
+    jaculatorias:[
+      'Por tu limpia concepción ¡Oh soberana princesa!<br>R. Una muy grande pureza te pido de corazón.',
+      'María, Madre de Gracia y Madre de Misericordia.<br>R. En la vida y en la muerte ampáranos Gran Señora.',
+      'Ave, María Purísima.<br>R. Sin pecado concebida.',
+    ],
     fatima:'Oh Jesús mío, perdona nuestras culpas, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia.',
     aveTrinidades:[
-      {titulo:'Dios te salve, María Santísima, Hija de Dios Padre',texto:'Dios te salve, María Santísima, Hija de Dios Padre, virgen purísima antes del parto. En tus manos ponemos nuestra fé para que la ilumines. Llena eres de gracia; el Señor está contigo. Bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús.<br>Santa María, Madre de Dios, ruega por nosotros pecadores, ahora y en la hora de nuestra muerte. Amén.'},
-      {titulo:'Dios te salve, María Santísima, Madre de Dios Hijo',texto:'Dios te salve, María Santísima, Madre de Dios Hijo, virgen purísima en el parto. En tus manos ponemos nuestra esperanza para que la alientes. Llena eres de gracia; el Señor es contigo. Bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús.<br>Santa María, Madre de Dios, ruega por nosotros pecadores, ahora y en la hora de nuestra muerte. Amén.'},
-      {titulo:'Dios te salve, María Santísima, Esposa de Dios Espíritu Santo',texto:'Dios te salve, María Santísima, Esposa de Dios Espíritu Santo, virgen purísima después del parto. En tus manos ponemos nuestra caridad para que la inflames, nuestras necesidades para que las remedies, y nuestras almas para que las salves. Llena eres de gracia; el Señor es contigo. Bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús.<br>Santa María, Madre de Dios, ruega por nosotros pecadores, ahora y en la hora de nuestra muerte. Amén.'},
+      {titulo:'Dios te salve, María Santísima, Hija de Dios Padre',texto:'Dios te salve, María Santísima, Hija de Dios Padre, virgen purísima antes del parto. En tus manos ponemos nuestra fé para que la ilumines.<br>Llena eres de gracia; el Señor está contigo. Bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús.<br>Santa María, Madre de Dios, ruega por nosotros pecadores, ahora y en la hora de nuestra muerte. Amén.'},
+      {titulo:'Dios te salve, María Santísima, Madre de Dios Hijo',texto:'Dios te salve, María Santísima, Madre de Dios Hijo, virgen purísima en el parto. En tus manos ponemos nuestra esperanza para que la alientes.<br>Llena eres de gracia; el Señor es contigo. Bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús.<br>Santa María, Madre de Dios, ruega por nosotros pecadores, ahora y en la hora de nuestra muerte. Amén.'},
+      {titulo:'Dios te salve, María Santísima, Esposa de Dios Espíritu Santo',texto:'Dios te salve, María Santísima, Esposa de Dios Espíritu Santo, virgen purísima después del parto. En tus manos ponemos nuestra caridad para que la inflames, nuestras necesidades para que las remedies, y nuestras almas para que las salves.<br>Llena eres de gracia; el Señor es contigo. Bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús.<br>Santa María, Madre de Dios, ruega por nosotros pecadores, ahora y en la hora de nuestra muerte. Amén.'},
     ],
-    salve:'Dios te salve, María Santísima, templo, trono y sagrario de la Santísima Trinidad, virgen concebida sin la culpa del pecado original, Amén. <br><br> Dios te salve, Reina y Madre, madre de misericordia, vida, dulzura y esperanza nuestra. Dios te salve. A ti llamamos los desterrados hijos de Eva; a ti suspiramos, gimiendo y llorando en este valle de lágrimas. Ea, pues, Señora abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro, muéstranos a Jesús, fruto bendito de tu vientre. ¡Oh clemente!, ¡Oh piadosa!, ¡Oh dulce siempre Virgen María! Ruega por nosotros, Santa Madre de Dios, para que seamos dignos de alcanzar las divinas gracias y promesas de Jesucristo. Amén.',
+    salve:'Dios te salve, María Santísima, templo, trono y sagrario de la Santísima Trinidad,<br>virgen concebida sin la culpa del pecado original, Amén. <br><br> Dios te salve, Reina y Madre, madre de misericordia, vida, dulzura y esperanza nuestra.<br>Dios te salve. A ti llamamos los desterrados hijos de Eva,<br>a ti suspiramos, gimiendo y llorando en este valle de lágrimas.<br>¡Ea, pues! Señora abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos,<br>y después de este destierro, muéstranos a Jesús, fruto bendito de tu vientre.<br>¡Oh clemente!, ¡Oh piadosa!, ¡Oh dulce siempre Virgen María!<br>Ruega por nosotros, Santa Madre de Dios, para que seamos dignos de alcanzar las divinas gracias y promesas de nuestro Señor Jesucristo.<br>Amén.',
     letanias:[
-      'Santa María','Santa Madre de Dios','Santa Virgen de las Vírgenes',
-      'Madre de Cristo','Madre de la Iglesia','Madre de la misericordia',
-      'Madre de la divina gracia','Madre purísima',
-      'Madre castísima','Madre siempre virgen','Madre inmaculada',
-      'Madre amable','Madre admirable','Madre del buen consejo',
-      'Madre del Creador','Madre del Salvador','Madre de la familia',
-      'Virgen prudentísima','Virgen digna de veneración','Virgen digna de alabanza',
-      'Virgen poderosa','Virgen clemente','Virgen fiel',
-      'Espejo de justicia','Trono de la sabiduría','Causa de nuestra alegría',
-      'Vaso espiritual','Vaso digno de honor','Vaso de insigne devoción',
-      'Rosa mística','Torre de David','Torre de marfil',
-      'Casa de oro','Arca de la Alianza','Puerta del cielo',
-      'Estrella de la mañana','Salud de los enfermos','Refugio de los pecadores',
-      'Consuelo de los afligidos','Auxilio de los cristianos',
-      'Reina de los Ángeles','Reina de los Patriarcas','Reina de los Profetas',
-      'Reina de los Apóstoles','Reina de los Mártires','Reina de los Confesores',
-      'Reina de las Vírgenes','Reina de todos los Santos',
-      'Reina concebida sin pecado original','Reina llevada al cielo',
-      'Reina del Santísimo Rosario','Reina de la familia','Reina de la paz'
+      {v:'Señor, ten piedad de nosotros.',      r:'Señor, ten piedad de nosotros.'},
+      {v:'Cristo, ten piedad de nosotros.',     r:'Cristo, ten piedad de nosotros.'},
+      {v:'Señor, ten piedad de nosotros.',      r:'Señor, ten piedad de nosotros.'},
+      {v:'Cristo, óyenos.',                     r:'Cristo, óyenos.'},
+      {v:'Cristo, escúchanos.',                 r:'Cristo, escúchanos.'},
+      {v:'Dios Padre celestial,',               r:'Ten piedad de nosotros.'},
+      {v:'Dios Hijo, Redentor del mundo,',      r:'Ten piedad de nosotros.'},
+      {v:'Dios Espíritu Santo,',                r:'Ten piedad de nosotros.'},
+      {v:'Santísima Trinidad, un solo Dios,',   r:'Ten piedad de nosotros.'},
+      {v:'Santa María',                         r:'Ruega por nosotros.'},
+      {v:'Santa Madre de Dios',                 r:'Ruega por nosotros.'},
+      {v:'Santa Virgen de las Vírgenes',        r:'Ruega por nosotros.'},
+      {v:'Madre de Cristo',                     r:'Ruega por nosotros.'},
+      {v:'Madre de la Iglesia',                 r:'Ruega por nosotros.'},
+      {v:'Madre de la misericordia',            r:'Ruega por nosotros.'},
+      {v:'Madre de la divina gracia',           r:'Ruega por nosotros.'},
+      {v:'Madre purísima',                      r:'Ruega por nosotros.'},
+      {v:'Madre castísima',                     r:'Ruega por nosotros.'},
+      {v:'Madre siempre virgen',                r:'Ruega por nosotros.'},
+      {v:'Madre inmaculada',                    r:'Ruega por nosotros.'},
+      {v:'Madre amable',                        r:'Ruega por nosotros.'},
+      {v:'Madre admirable',                     r:'Ruega por nosotros.'},
+      {v:'Madre del buen consejo',              r:'Ruega por nosotros.'},
+      {v:'Madre del Creador',                   r:'Ruega por nosotros.'},
+      {v:'Madre del Salvador',                  r:'Ruega por nosotros.'},
+      {v:'Virgen Pridentísima',                 r:'Ruega por nosotros.'},
+      {v:'Virgen digna de veneración',          r:'Ruega por nosotros.'},
+      {v:'Virgen digna de alabanza',            r:'Ruega por nosotros.'},
+      {v:'Virgen poderosa',                     r:'Ruega por nosotros.'},
+      {v:'Virgen clemente',                     r:'Ruega por nosotros.'},
+      {v:'Virgen fiel',                         r:'Ruega por nosotros.'},
+      {v:'Espejo de justicia',                  r:'Ruega por nosotros.'},
+      {v:'Trono de la sabiduría',               r:'Ruega por nosotros.'},
+      {v:'Causa de nuestra alegría',            r:'Ruega por nosotros.'},
+      {v:'Vaso espiritual',                     r:'Ruega por nosotros.'},
+      {v:'Vaso digno de honor',                 r:'Ruega por nosotros.'},
+      {v:'Vaso de insigne devoción',            r:'Ruega por nosotros.'},
+      {v:'Rosa mística',                        r:'Ruega por nosotros.'},
+      {v:'Torre de David',                      r:'Ruega por nosotros.'},
+      {v:'Torre de marfil',                     r:'Ruega por nosotros.'},
+      {v:'Casa de oro',                         r:'Ruega por nosotros.'},
+      {v:'Arca de la Alianza',                  r:'Ruega por nosotros.'},
+      {v:'Puerta del cielo',                    r:'Ruega por nosotros.'},
+      {v:'Estrella de la mañana',               r:'Ruega por nosotros.'},
+      {v:'Salud de los enfermos',               r:'Ruega por nosotros.'},
+      {v:'Refugio de los pecadores',            r:'Ruega por nosotros.'},
+      {v:'Consuelo de los afligidos',           r:'Ruega por nosotros.'},
+      {v:'Auxilio de los cristianos',           r:'Ruega por nosotros.'},
+      {v:'Reina de los Ángeles',                r:'Ruega por nosotros.'},
+      {v:'Reina de los Patriarcas',             r:'Ruega por nosotros.'},
+      {v:'Reina de los Profetas',               r:'Ruega por nosotros.'},
+      {v:'Reina de los Apóstoles',              r:'Ruega por nosotros.'},
+      {v:'Reina de los Mártires',               r:'Ruega por nosotros.'},
+      {v:'Reina de los Confesores',             r:'Ruega por nosotros.'},
+      {v:'Reina de las Vírgenes',               r:'Ruega por nosotros.'},
+      {v:'Reina de todos los Santos',           r:'Ruega por nosotros.'},
+      {v:'Reina concebida sin pecado original', r:'Ruega por nosotros.'},
+      {v:'Reina llevada al cielo',              r:'Ruega por nosotros.'},
+      {v:'Reina del Santísimo Rosario',         r:'Ruega por nosotros.'},
+      {v:'Reina de la familia',                 r:'Ruega por nosotros.'},
+      {v:'Reina de la paz',                     r:'Ruega por nosotros.'},
+      {v:'Cordero de Dios, que quitas el pecado del mundo', r:'Perdónanos, Señor.'},
+      {v:'Cordero de Dios, que quitas el pecado del mundo', r:'Escúchanos, Señor.'},
+      {v:'Cordero de Dios, que quitas el pecado del mundo', r:'Ten piedad y misericordia de nosotros.'}
     ],
-    oracionFinal:'Bajo tu amparo nos acogemos, Santa Madre de Dios; no desprecies las súplicas que te dirigimos en nuestras necesidades, antes bien líbranos siempre de todo peligro, ¡Oh Virgen gloriosa y bendita!<br>Ruega por nosotros Santa Madre de Dios, para que seamos dignos de alcanzar las divinas gracias y promesas de nuestro Señor Jesucristo. Amén.',
+    oracionFinal:'Bajo tu amparo nos acogemos, Santa Madre de Dios,<br> no desprecies las súplicas que te dirigimos en nuestras necesidades,<br>antes bien líbranos siempre de todo peligro, <br>¡Oh Virgen gloriosa y bendita!<br>Ruega por nosotros Santa Madre de Dios,<br>para que seamos dignos de alcanzar las divinas gracias y promesas<br>de nuestro Señor Jesucristo. <br>Amén.',
+  
   }
 };
 
-const DIAS={0:'Gloriosos',1:'Gozosos',2:'Dolorosos',3:'Gloriosos',4:'Luminosos',5:'Dolorosos',6:'Gozosos'};
+const DIAS = {0:'Gloriosos',1:'Gozosos',2:'Dolorosos',3:'Gloriosos',4:'Luminosos',5:'Dolorosos',6:'Gozosos'};
+function detectarTipo(){ return DIAS[new Date().getDay()]; }
 
-let steps=[], cur=0, tipo='Gozosos', letIdx=0, intStep=0;
-
-function detectarTipo(){return DIAS[new Date().getDay()];}
+// ── State ──────────────────────────────────────────────────────────────────
+let steps = [], cur = 0, tipo = 'Gozosos';
 
 function buildSteps(t){
-  tipo=t; const M=DATA.misterios[t]; const O=DATA.oraciones;
-  steps=[];
-
+  tipo = t;
+  steps = [];
   steps.push({type:'portada'});
   steps.push({type:'iniciales'});
   steps.push({type:'cual-misterio'});
-
   for(let i=0;i<5;i++){
-    steps.push({type:'misterio',idx:i});
-    steps.push({type:'padre',idx:i});
-    steps.push({type:'decenio',idx:i,cuenta:0});
-    steps.push({type:'trio',idx:i});
+    steps.push({type:'misterio', idx:i});
+    steps.push({type:'padre', idx:i});
+    steps.push({type:'decenio', idx:i, cuenta:0});
+    steps.push({type:'trio', idx:i});
   }
-
-  steps.push({type:'intenciones',step:0});
-  steps.push({type:'salve'});
-  steps.push({type:'letanias-intro'});
-  steps.push({type:'letanias',letIdx:0});
-  steps.push({type:'letanias-cierre'});
+  steps.push({type:'intenciones', step:0});
+  steps.push({type:'letanias', letIdx:0});
   steps.push({type:'oracion-final'});
   steps.push({type:'cierre-final'});
 }
 
-function totalScreens(){return steps.length;}
-
-function pct(){
-  if(cur<=0)return 0;
-  return Math.round((cur/(steps.length-1))*100);
+// ── Helpers ────────────────────────────────────────────────────────────────
+function setUI(topBg, topText, botText, showHome){
+  const tb = document.getElementById('topbar');
+  tb.style.background = topBg || 'transparent';
+  document.getElementById('topLabel').textContent = topText || '';
+  document.getElementById('botLabel').textContent = botText || '✦ Ad Maiorem Dei Gloriam ✦';
+  document.getElementById('homeBtn').style.display = showHome ? 'flex' : 'none';
+  document.getElementById('progress').style.width = cur > 0 ? Math.round(cur/(steps.length-1)*100)+'%' : '0%';
 }
 
-function acColor(prop='ac'){
-  const M=DATA.misterios[tipo];
-  return prop==='ac'?M.ac:M.acL;
+function h(tag, attrs, ...children){
+  const el = document.createElement(tag);
+  if(attrs) Object.entries(attrs).forEach(([k,v])=>{ if(k==='class') el.className=v; else if(k==='html') el.innerHTML=v; else el.setAttribute(k,v); });
+  children.forEach(c=>{ if(c) el.appendChild(typeof c==='string'?document.createTextNode(c):c); });
+  return el;
+}
+function div(attrs, ...c){ return h('div',attrs,...c); }
+function p(attrs, ...c){ return h('p',attrs,...c); }
+function span(attrs, ...c){ return h('span',attrs,...c); }
+function cross(){
+  const d = div({class:'cross'});
+  return d;
+}
+function divider(extra){
+  const d = div({class:'divider'});
+  if(extra) d.setAttribute('style', extra);
+  return d;
+}
+function setMain(el){
+  const m = document.getElementById('main');
+  m.innerHTML = '';
+  m.appendChild(el);
 }
 
+// ── Render ─────────────────────────────────────────────────────────────────
 function render(){
-  const s=steps[cur];
-  const app=document.getElementById('app');
-  const hb=document.getElementById('homeBtn');
-  if(hb) hb.style.display=cur>0?'flex':'none';
-
-  const tbar=document.getElementById('topbar');
-  const bbar=document.getElementById('bottombar');
-  const prog=document.getElementById('progress');
-  prog.style.width=pct()+'%';
-
-  const M=DATA.misterios[tipo];
-  const ac=M.ac, acL=M.acL;
+  const s = steps[cur];
+  const M = DATA.misterios[tipo];
+  const ac = M.ac, acL = M.acL;
+  const O = DATA.oraciones;
 
   if(s.type==='portada'){
-    const hoy=detectarTipo();
-    const Mhoy=DATA.misterios[hoy];
-    const diasNombres=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
-    const diaStr=diasNombres[new Date().getDay()];
-    tbar.style.background='transparent'; tbar.textContent='';
-    bbar.textContent='✦ Ad Maiorem Dei Gloriam ✦';
-    app.innerHTML=`
-    <div class="screen active" style="gap:10px">
-      <div class="cross"></div>
-      <div class="big-title">EL SANTO ROSARIO</div>
-      <div style="width:200px;height:1px;background:var(--gold);margin:8px 0;opacity:.6"></div>
+    const hoy = detectarTipo();
+    const Mhoy = DATA.misterios[hoy];
+    const dias = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+    setUI('transparent','','✦ Ad Maiorem Dei Gloriam ✦', false);
 
-      <div style="background:${Mhoy.ac};border-radius:10px;padding:12px clamp(20px,4vw,48px);text-align:center;border:2px solid ${Mhoy.acL}">
-        <p style="font-size:clamp(9px,1.2vw,12px);color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Hoy es ${diaStr} — corresponden los</p>
-        <p style="font-family:Georgia,serif;font-size:clamp(20px,3.5vw,40px);color:#fff;font-weight:700;line-height:1.15;white-space:nowrap">Misterios ${hoy}</p>
-        <p style="font-size:clamp(9px,1.2vw,12px);color:rgba(255,255,255,.75);margin-top:3px">${Mhoy.dias}</p>
-      </div>
+    const page = div({class:'page centered', style:'gap:10px'});
+    page.appendChild(cross());
+    page.appendChild(div({class:'big-title', html:'EL SANTO ROSARIO'}));
+    page.appendChild(div({class:'sub-title', html:'de la Santísima Virgen María'}));
+    page.appendChild(divider());
 
-      <button class="btn" onclick="elegirTipo('${hoy}')" style="margin-top:4px;font-size:clamp(13px,2.2vw,24px);padding:16px clamp(28px,6vw,64px)">
-        Comenzar el Rosario de hoy ›
-      </button>
+    const hoyBox = div({style:'background:'+Mhoy.ac+';border-radius:10px;padding:12px 32px;text-align:center;border:2px solid '+Mhoy.acL+';max-width:min(420px,88vw)'});
+    hoyBox.appendChild(p({style:'font-size:11px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px'}, 'Hoy es '+dias[new Date().getDay()]+' — corresponden los'));
+    hoyBox.appendChild(p({style:'font-family:Georgia,serif;font-size:clamp(20px,3.5vw,38px);color:#fff;font-weight:700;line-height:1.15'}, 'Misterios '+hoy));
+    hoyBox.appendChild(p({style:'font-size:11px;color:rgba(255,255,255,.75);margin-top:3px'}, Mhoy.dias));
+    page.appendChild(hoyBox);
 
-      <p style="font-size:clamp(9px,1.2vw,12px);color:var(--gray);margin-top:2px">o elige otro conjunto:</p>
-      <div class="tipo-grid" style="max-width:min(580px,88vw)">
-        ${['Gozosos','Luminosos','Dolorosos','Gloriosos'].map(t=>{
-          const m=DATA.misterios[t];
-          const esHoy=t===hoy;
-          const outline=esHoy?'outline:3px solid '+m.acL+';outline-offset:2px':'';
-          const badge=esHoy?'<span style="font-size:10px;background:rgba(255,255,255,.25);border-radius:4px;padding:1px 6px;color:#fff">hoy ✓</span>':'';
-          return '<button class="tipo-btn" style="background:'+m.ac+';'+outline+'" onclick="elegirTipo(\''+t+'\')">'+'<span class="tname">'+t+'</span>'+'<span class="tdays">'+m.dias+'</span>'+badge+'</button>';
-      </div>
-    </div>`;
+    const btnHoy = document.createElement('button');
+    btnHoy.className = 'btn';
+    btnHoy.style.marginTop = '4px';
+    btnHoy.textContent = 'Comenzar el Rosario de hoy ›';
+    btnHoy.onclick = ()=>elegirTipo(hoy);
+    page.appendChild(btnHoy);
+
+    page.appendChild(p({style:'font-size:11px;color:var(--gray);margin-top:2px'}, 'o elige otro conjunto:'));
+
+    const grid = div({class:'tipo-grid'});
+    ['Gozosos','Luminosos','Dolorosos','Gloriosos'].forEach(t=>{
+      const m = DATA.misterios[t];
+      const esHoy = t===hoy;
+      const btn = document.createElement('button');
+      btn.className = 'tipo-btn';
+      btn.style.cssText = 'background:'+m.ac+(esHoy?';outline:3px solid '+m.acL+';outline-offset:2px':'');
+      btn.onclick = ()=>elegirTipo(t);
+      const nm = span({class:'tname'}, t);
+      const dy = span({class:'tdays'}, m.dias);
+      btn.appendChild(nm);
+      btn.appendChild(dy);
+      if(esHoy){ const b=span({class:'hoy-badge'},'hoy ✓'); btn.appendChild(b); }
+      grid.appendChild(btn);
+    });
+    page.appendChild(grid);
+    setMain(page);
     return;
   }
 
   if(s.type==='iniciales'){
-    tbar.style.background=ac; tbar.textContent=`Misterios ${tipo}  ·  ${M.dias}`;
-    bbar.textContent='✦ Oraciones Iniciales ✦';
-    app.innerHTML=`
-    <div class="screen active">
-      <div class="scroll-area">
-        <div class="section-title">Oraciones Iniciales</div>
-        <div class="divider"></div>
-        <div style="display:flex;flex-direction:column;gap:2.5vh;max-width:min(820px,92vw);width:100%">
-          <div>
-            <div class="prayer-title">Por la señal de la santa Cruz</div>
-            <p class="prayer-text">${DATA.oraciones.senial}</p>
-          </div>
-          <div class="divider" style="opacity:.3"></div>
-          <div>
-            <div class="prayer-title">Acto de Contrición</div>
-            <p class="prayer-text">${DATA.oraciones.contriccion}</p>
-          </div>
-        </div>
-      </div>
-    </div>`;
+    setUI(ac, 'Misterios '+tipo+'  ·  '+M.dias, '✦ Oraciones Iniciales ✦', true);
+    const page = div({class:'page'});
+    page.appendChild(div({class:'section-title', html:'Oraciones Iniciales'}));
+    page.appendChild(divider());
+    page.appendChild(div({class:'prayer-title', html:'Por la señal de la santa Cruz'}));
+    page.appendChild(p({class:'prayer-text', html:O.senial}));
+    page.appendChild(divider('opacity:.3'));
+    page.appendChild(div({class:'prayer-title', html:'Acto de Contrición'}));
+    page.appendChild(p({class:'prayer-text', html:O.contriccion}));
+    setMain(page);
     return;
   }
 
   if(s.type==='cual-misterio'){
-    tbar.style.background=ac; tbar.textContent=`Misterios ${tipo}  ·  ${M.dias}`;
-    bbar.textContent=`✦ Misterios ${tipo} ✦`;
-    app.innerHTML=`
-    <div class="screen active" style="gap:12px">
-      <div style="width:clamp(22px,4vw,40px);height:clamp(30px,5.5vw,52px);position:relative">
-        <div style="position:absolute;left:50%;top:0;transform:translateX(-50%);width:30%;height:100%;background:var(--gold)"></div>
-        <div style="position:absolute;top:36%;left:0;right:0;height:28%;background:var(--gold)"></div>
-      </div>
-      <div class="big-title" style="font-size:clamp(24px,5vw,60px)">Misterios<br>${tipo}</div>
-      <div class="sub-title">${M.dias}</div>
-      <div class="divider"></div>
-      <div style="display:flex;flex-direction:column;gap:6px;max-width:min(620px,90vw);width:100%">
-        ${M.lista.map((m,i)=>`
-        <div style="display:flex;align-items:center;gap:1.2vw">
-          <div style="width:clamp(14px,2.5vw,22px);height:clamp(14px,2.5vw,22px);border-radius:50%;background:${ac};flex-shrink:0"></div>
-          <span style="font-size:clamp(11px,1.7vw,19px);color:var(--cream)">${m.num}. ${m.titulo}</span>
-        </div>`).join('')}
-      </div>
-    </div>`;
+    setUI(ac, 'Misterios '+tipo+'  ·  '+M.dias, '✦ Misterios '+tipo+' ✦', true);
+    const page = div({class:'page centered', style:'gap:10px'});
+    page.appendChild(cross());
+    page.appendChild(div({class:'big-title', style:'font-size:clamp(24px,5vw,56px)', html:'Misterios<br>'+tipo}));
+    page.appendChild(div({class:'sub-title'}, M.dias));
+    page.appendChild(divider());
+    M.lista.forEach(m=>{
+      const row = div({style:'display:flex;align-items:center;gap:12px;max-width:min(620px,90vw)'});
+      const dot = div({style:'width:16px;height:16px;border-radius:50%;background:'+ac+';flex-shrink:0'});
+      const txt = span({style:'font-size:clamp(11px,1.7vw,18px);color:var(--cream)'}, m.num+'. '+m.titulo);
+      row.appendChild(dot); row.appendChild(txt);
+      page.appendChild(row);
+    });
+    setMain(page);
     return;
   }
 
   if(s.type==='misterio'){
-    const m=M.lista[s.idx];
-    const ord=['Primer','Segundo','Tercer','Cuarto','Quinto'][s.idx];
-    tbar.style.background=ac; tbar.textContent=`Misterios ${tipo}  ·  ${m.num} de V`;
-    bbar.textContent=`✦ ${ord} Misterio ${tipo} ✦`;
-    app.innerHTML=`
-    <div class="screen active">
-      <div class="scroll-area">
-        <div class="mist-card" style="--ac:${ac};--acL:${acL}">
-          <div class="mist-head">
-            <div class="mist-num" style="background:${ac};border:2px solid ${acL}">${m.num}</div>
-            <div>
-              <div class="mist-sub">${ord} Misterio ${tipo}</div>
-              <div class="mist-title">${m.titulo}</div>
-            </div>
-          </div>
-          <div class="divider" style="margin:0 0 12px;opacity:.4;width:100%"></div>
-          <div class="mist-med">${m.med}</div>
-          <div class="mist-fruto"><b>Fruto del misterio:</b> ${M.frutos[s.idx]}</div>
-        </div>
-      </div>
-    </div>`;
+    const m = M.lista[s.idx];
+    const ord = ['Primer','Segundo','Tercer','Cuarto','Quinto'][s.idx];
+    setUI(ac, 'Misterios '+tipo+'  ·  '+m.num+' de V', '✦ '+ord+' Misterio '+tipo+' ✦', true);
+    const page = div({class:'page'});
+    const card = div({class:'mist-card'});
+    const head = div({class:'mist-head'});
+    const num = div({class:'mist-num', style:'background:'+ac+';border:2px solid '+acL}, m.num);
+    const info = div({});
+    info.appendChild(div({class:'mist-sub'}, ord+' Misterio '+tipo));
+    info.appendChild(div({class:'mist-title', html:m.titulo}));
+    head.appendChild(num); head.appendChild(info);
+    card.appendChild(head);
+    card.appendChild(divider('margin:0 0 12px;opacity:.4;width:100%'));
+    card.appendChild(p({class:'mist-med', html:m.med}));
+    const fruto = div({class:'mist-fruto'});
+    fruto.innerHTML = '<b>Fruto del misterio:</b> '+M.frutos[s.idx];
+    card.appendChild(fruto);
+    page.appendChild(card);
+    setMain(page);
     return;
   }
 
   if(s.type==='padre'){
-    const m=M.lista[s.idx];
-    tbar.style.background=ac; tbar.textContent=`Misterio ${m.num}: ${m.titulo}`;
-    bbar.textContent=`✦ Padre Nuestro · Misterio ${m.num} ✦`;
-    app.innerHTML=`
-    <div class="screen active" style="gap:12px">
-      <div style="width:clamp(18px,3vw,32px);height:clamp(24px,4.5vw,42px);position:relative">
-        <div style="position:absolute;left:50%;top:0;transform:translateX(-50%);width:30%;height:100%;background:var(--gold)"></div>
-        <div style="position:absolute;top:36%;left:0;right:0;height:28%;background:var(--gold)"></div>
-      </div>
-      <div class="section-title">Padre Nuestro</div>
-      <div class="divider"></div>
-      <p class="prayer-text" style="text-align:center;font-family:Georgia,serif;font-size:clamp(13px,2.1vw,24px);line-height:1.7">${DATA.oraciones.padreNuestro}</p>
-    </div>`;
+    const m = M.lista[s.idx];
+    setUI(ac, 'Misterio '+m.num+': '+m.titulo, '✦ Padre Nuestro · Misterio '+m.num+' ✦', true);
+    const page = div({class:'page centered', style:'gap:12px'});
+    page.appendChild(cross());
+    page.appendChild(div({class:'section-title'}, 'Padre Nuestro'));
+    page.appendChild(divider());
+    page.appendChild(p({class:'prayer-text', style:'text-align:center;font-family:Georgia,serif;font-size:clamp(13px,2.1vw,22px);line-height:1.7', html:O.padreNuestro}));
+    setMain(page);
     return;
   }
 
   if(s.type==='decenio'){
-    const m=M.lista[s.idx];
-    const cnt=s.cuenta||0;
-    tbar.style.background=ac; tbar.textContent=`Misterio ${m.num}: ${m.titulo}  ·  Decenio`;
-    bbar.textContent=cnt<10?`✦ Ave María ${cnt+1} de 10 ✦`:'✦ Decenio completo — avanza ✦';
-    app.innerHTML=`
-    <div class="screen active" style="gap:12px">
-      <div class="section-title" style="font-size:clamp(16px,3vw,36px)">Ave María</div>
-      <div class="cuentas-row" id="cuentas" style="--ac:${ac};--acL:${acL}">
-        ${Array.from({length:10},(_,i)=>`<div class="cuenta${i<cnt?' marcada':''}">${i+1}</div>`).join('')}
-      </div>
-      <div class="divider"></div>
-      <p class="prayer-text" style="text-align:center;font-size:clamp(12px,1.9vw,21px);max-width:min(720px,90vw)">${DATA.oraciones.aveMaria}</p>
-    </div>`;
+    const m = M.lista[s.idx];
+    const cnt = s.cuenta||0;
+    setUI(ac, 'Misterio '+m.num+': '+m.titulo+'  ·  Decenio', cnt<10?'✦ Ave María '+(cnt+1)+' de 10 ✦':'✦ Decenio completo — avanza ✦', true);
+    const page = div({class:'page centered', style:'gap:10px'});
+    page.appendChild(div({class:'section-title', style:'font-size:clamp(16px,3vw,34px)'}, 'Ave María'));
+    const row = div({class:'cuentas-row'});
+    for(let i=0;i<10;i++){
+      const c = div({class:'cuenta'+(i<cnt?' marcada':'')}, String(i+1));
+      c.style.cssText = i<cnt ? 'background:'+ac+';border-color:'+acL : '';
+      row.appendChild(c);
+    }
+    page.appendChild(row);
+    page.appendChild(divider());
+    page.appendChild(p({class:'prayer-text', style:'text-align:center;font-size:clamp(12px,1.9vw,20px)', html:O.aveMaria}));
+    setMain(page);
     return;
   }
 
   if(s.type==='trio'){
-    const m=M.lista[s.idx];
-    const esUlt=s.idx===4;
-    tbar.style.background=ac; tbar.textContent=`Fin del Misterio ${m.num}`;
-    bbar.textContent=`✦ Gloria · Jaculatoria · Fátima ✦`;
-    app.innerHTML=`
-    <div class="screen active">
-      <div class="scroll-area">
-        <div class="trio-block">
-          <div class="trio-item">
-            <div class="prayer-title">Gloria</div>
-            <div class="divider" style="background:${ac}"></div>
-            <p class="prayer-text" style="text-align:center">${DATA.oraciones.gloria}</p>
-          </div>
-          <div class="trio-item">
-            <div class="prayer-title">Jaculatoria</div>
-            <div class="divider" style="background:${acL}"></div>
-            <p class="prayer-text" style="text-align:center;font-style:italic">${DATA.oraciones.jaculatoria}</p>
-          </div>
-          <div class="trio-item">
-            <div class="prayer-title">Oración de Fátima</div>
-            <div class="divider" style="background:${acL}"></div>
-            <p class="prayer-text" style="text-align:center">${DATA.oraciones.fatima}</p>
-          </div>
-        </div>
-      </div>
-    </div>`;
+    if(s.jacIdx===undefined){ steps[cur]={...s,jacIdx:Math.floor(Math.random()*O.jaculatorias.length)}; }
+    const m = M.lista[s.idx];
+    const jac = O.jaculatorias[steps[cur].jacIdx];
+    const esUlt = s.idx===4;
+    setUI(ac, 'Fin del Misterio '+m.num, '✦ Gloria · Jaculatoria · Fátima ✦', true);
+    const page = div({class:'page', style:'gap:14px'});
+    page.appendChild(div({class:'prayer-title'}, 'Gloria'));
+    page.appendChild(divider('background:'+ac));
+    page.appendChild(p({class:'prayer-text', style:'text-align:center', html:O.gloria}));
+    page.appendChild(divider('opacity:.3'));
+    page.appendChild(div({class:'prayer-title'}, 'Jaculatoria'));
+    page.appendChild(divider('background:'+acL));
+    page.appendChild(p({class:'prayer-text', style:'text-align:center;font-style:italic', html:jac}));
+    page.appendChild(divider('opacity:.3'));
+    page.appendChild(div({class:'prayer-title'}, 'Oración de Fátima'));
+    page.appendChild(divider('background:'+acL));
+    page.appendChild(p({class:'prayer-text', style:'text-align:center', html:O.fatima}));
+    setMain(page);
     return;
   }
 
   if(s.type==='intenciones'){
-    const st=s.step||0;
-    tbar.style.background='#3a3a00'; tbar.textContent='Oraciones por las intenciones del Santo Padre';
-    bbar.textContent='✦ Intenciones del Papa ✦';
-
+    const st = s.step||0;
+    setUI('#3a3a00','Oraciones por las intenciones del Santo Padre','✦ Intenciones del Papa ✦', true);
+    const page = div({class:'page centered', style:'gap:12px'});
     if(st===0){
-      app.innerHTML=`
-      <div class="screen active" style="gap:12px">
-        <div class="section-title" style="font-size:clamp(15px,2.5vw,30px)">Oraciones por las intenciones<br>de Su Santidad el Papa</div>
-        <div class="divider"></div>
-        <p style="font-size:clamp(11px,1.6vw,17px);color:var(--gray);text-align:center;max-width:500px">Un Padre Nuestro, tres Ave Marías<br>y la Salve por las intenciones del Romano Pontífice</p>
-        <div class="divider" style="opacity:.3"></div>
-        <div class="prayer-title">Padre Nuestro</div>
-        <p class="prayer-text" style="text-align:center;font-size:clamp(12px,1.8vw,20px)">${DATA.oraciones.padreNuestro}</p>
-      </div>`;
-    } else if(st>=1&&st<=3){
-      const ave=DATA.oraciones.aveTrinidades[st-1];
-      app.innerHTML=`
-      <div class="screen active" style="gap:12px">
-        <div class="section-title" style="font-size:clamp(14px,2.2vw,26px)">${ave.titulo}</div>
-        <div class="divider"></div>
-        <p class="prayer-text" style="text-align:center;font-size:clamp(12px,1.8vw,20px)">${ave.texto}</p>
-        <div style="display:flex;gap:1.2vw;margin-top:8px">
-          ${[1,2,3].map(i=>`<div style="width:clamp(16px,2.8vw,28px);height:clamp(16px,2.8vw,28px);border-radius:50%;background:${i<=st?'var(--gold)':'var(--navy3)'};border:1.5px solid var(--gold)"></div>`).join('')}
-        </div>
-      </div>`;
+      page.appendChild(div({class:'section-title', style:'font-size:clamp(14px,2.4vw,26px)', html:'Oraciones por las intenciones<br>de Su Santidad el Papa'}));
+      page.appendChild(divider());
+      page.appendChild(p({style:'font-size:clamp(11px,1.6vw,16px);color:var(--gray);text-align:center', html:'Un Padre Nuestro, tres Ave Marías<br>y la Salve por las intenciones del Romano Pontífice'}));
+      page.appendChild(divider('opacity:.3'));
+      page.appendChild(div({class:'prayer-title'}, 'Padre Nuestro'));
+      page.appendChild(p({class:'prayer-text', style:'text-align:center;font-size:clamp(12px,1.8vw,19px)', html:O.padreNuestro}));
+    } else if(st>=1 && st<=3){
+      const ave = O.aveTrinidades[st-1];
+      page.appendChild(div({class:'section-title', style:'font-size:clamp(13px,2vw,22px)', html:ave.titulo}));
+      page.appendChild(divider());
+      page.appendChild(p({class:'prayer-text', style:'text-align:center;font-size:clamp(12px,1.8vw,19px)', html:ave.texto}));
+      const dots = div({style:'display:flex;gap:10px;margin-top:8px'});
+      for(let i=1;i<=3;i++){
+        const d = div({style:'width:22px;height:22px;border-radius:50%;border:1.5px solid var(--gold);background:'+(i<=st?'var(--gold)':'var(--navy3)')});
+        dots.appendChild(d);
+      }
+      page.appendChild(dots);
     } else if(st===4){
-      app.innerHTML=`
-      <div class="screen active">
-        <div class="scroll-area">
-          <div class="section-title">Salve Regina</div>
-          <div class="divider"></div>
-          <p class="prayer-text" style="text-align:center;font-size:clamp(12px,1.9vw,21px)">${DATA.oraciones.salve}</p>
-        </div>
-      </div>`;
+      page.appendChild(div({class:'section-title'}, 'Salve Regina'));
+      page.appendChild(divider());
+      page.appendChild(p({class:'prayer-text', style:'text-align:center;font-size:clamp(12px,1.9vw,20px)', html:O.salve}));
     }
+    setMain(page);
     return;
   }
 
   if(s.type==='letanias'){
-    const li=s.letIdx||0;
-    const lets=DATA.oraciones.letanias;
-    tbar.style.background='#2a2040'; tbar.textContent='Letanías Lauretanas';
-    bbar.textContent=`✦ Letanías · ${li+1} de ${lets.length} ✦`;
-
-    const SHOW=9;
-    const start=Math.max(0,li-3);
-    const end=Math.min(lets.length,start+SHOW);
-    const visible=lets.slice(start,end);
-
-    app.innerHTML=`
-    <div class="screen active" style="gap:8px">
-      <div class="section-title" style="font-size:clamp(14px,2.4vw,28px)">Letanías Lauretanas</div>
-      <p style="font-size:clamp(9px,1.3vw,14px);color:var(--gold);font-style:italic;margin-bottom:4px">R. Ruega por nosotros</p>
-      <div class="let-list">
-        ${visible.map((inv,i)=>{
-          const realIdx=start+i;
-          const activa=realIdx===li;
-          const marcada=realIdx<li;
-          return `<div class="let-row${activa?' activa':''}">
-            <div class="let-marker${marcada||activa?' on':''}"></div>
-            <span class="let-inv" style="${activa?'color:var(--goldL);font-weight:600':''}">${inv}</span>
-            ${activa?`<span class="let-resp">Ruega por nosotros</span>`:''}
-          </div>`;
-        }).join('')}
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
-        <div style="height:3px;border-radius:2px;background:var(--gold);flex:${li+1}"></div>
-        <div style="height:3px;border-radius:2px;background:var(--navy3);flex:${lets.length-li-1}"></div>
-        <span style="font-size:clamp(9px,1.3vw,12px);color:var(--gray);margin-left:4px">${li+1}/${lets.length}</span>
-      </div>
-    </div>`;
-    return;
-  }
-
-  if(s.type==='letanias-intro'){
-    tbar.style.background='#2a2040'; tbar.textContent='Letanías Lauretanas';
-    bbar.textContent='✦ Letanías Lauretanas ✦';
-    const introItems=[
-      {v:'Señor, ten piedad de nosotros.',r:'Señor, ten piedad de nosotros.'},
-      {v:'Cristo, ten piedad de nosotros.',r:'Cristo, ten piedad de nosotros.'},
-      {v:'Señor, ten piedad de nosotros.',r:'Señor, ten piedad de nosotros.'},
-      {v:'Cristo, óyenos.',r:'Cristo, óyenos.'},
-      {v:'Cristo, escúchanos.',r:'Cristo, escúchanos.'},
-      {v:'Dios Padre celestial,',r:'Ten piedad de nosotros.'},
-      {v:'Dios Hijo, Redentor del mundo,',r:'Ten piedad de nosotros.'},
-      {v:'Dios Espíritu Santo,',r:'Ten piedad de nosotros.'},
-      {v:'Santísima Trinidad, un solo Dios,',r:'Ten piedad de nosotros.'},
-    ];
-    app.innerHTML=`
-    <div class="screen active" style="gap:8px">
-      <div class="section-title" style="font-size:clamp(14px,2.4vw,28px)">Letanías Lauretanas</div>
-      <div class="divider"></div>
-      <div style="display:flex;flex-direction:column;gap:4px;max-width:min(740px,92vw);width:100%">
-        ${introItems.map(row=>`
-        <div style="display:flex;align-items:baseline;gap:1vw;padding:4px clamp(8px,1.5vw,14px)">
-          <span style="font-size:clamp(11px,1.7vw,19px);color:var(--cream);flex:1">${row.v}</span>
-          <span style="font-size:clamp(10px,1.5vw,17px);color:var(--goldL);font-style:italic;flex-shrink:0">${row.r}</span>
-        </div>`).join('')}
-      </div>
-      <p style="font-size:clamp(9px,1.3vw,13px);color:var(--gray);margin-top:8px;text-align:center">Avanza para las invocaciones a la Virgen →</p>
-    </div>`;
-    return;
-  }
-
-  if(s.type==='letanias-cierre'){
-    tbar.style.background='#2a2040'; tbar.textContent='Letanías Lauretanas — Cierre';
-    bbar.textContent='✦ Letanías — Cierre ✦';
-    const cierreItems=[
-      {v:'Cordero de Dios, que quitas el pecado del mundo,',r:'Perdónanos, Señor.'},
-      {v:'Cordero de Dios, que quitas el pecado del mundo,',r:'Escúchanos, Señor.'},
-      {v:'Cordero de Dios, que quitas el pecado del mundo,',r:'Ten piedad de nosotros.'}
-    ];
-    app.innerHTML=`
-    <div class="screen active" style="gap:10px">
-      <div class="section-title" style="font-size:clamp(14px,2.4vw,28px)">Cierre de las Letanías</div>
-      <div class="divider"></div>
-      <div style="display:flex;flex-direction:column;gap:10px;max-width:min(740px,92vw);width:100%">
-        ${cierreItems.map((row,i)=>`
-        <div style="display:flex;flex-direction:column;gap:.2vh;padding:8px clamp(10px,2vw,18px);background:${i===3?'rgba(201,168,76,.08)':''};">
-          <span style="font-size:clamp(11px,1.7vw,19px);color:var(--cream)">${row.v}</span>
-          <span style="font-size:clamp(11px,1.7vw,19px);color:var(--goldL);font-style:italic;padding-left:1.5em">${row.r}</span>
-        </div>`).join('')}
-      </div>
-      <p style="font-size:clamp(9px,1.3vw,13px);color:var(--gray);margin-top:8px;text-align:center">Avanza para la oración final →</p>
-    </div>`;
-    return;
-  }
-
-  if(s.type==='cierre-final'){
-    tbar.style.background='transparent'; tbar.textContent='';
-    bbar.textContent='❆ Deo Gratias ❆';
-    app.innerHTML=`
-    <div class="screen active" style="gap:16px">
-      <div class="cross"></div>
-      <div class="section-title">Ave María Purísima</div>
-      <div class="divider"></div>
-      <p class="prayer-text" style="text-align:center;font-family:Georgia,serif;font-size:clamp(16px,2.8vw,32px);line-height:1.8;color:var(--goldL);font-style:italic">R. Sin pecado concebida.</p>
-      <div class="divider" style="opacity:.3"></div>
-      <p class="prayer-text" style="text-align:center;font-size:clamp(13px,2vw,22px);line-height:1.9">En el nombre del Padre,<br>y del Hijo,<br>y del Espíritu Santo.<br><span style="color:var(--goldL);font-weight:bold">Amén.</span></p>
-      <div class="divider" style="opacity:.2"></div>
-      <button class="btn-ghost" onclick="reiniciar()" style="margin-top:8px">Rezar de nuevo</button>
-    </div>`;
+    const li = s.letIdx||0;
+    const lets = O.letanias;
+    setUI('#2a2040','Letanías Lauretanas','✦ Letanías · '+(li+1)+' de '+lets.length+' ✦', true);
+    const page = div({class:'page', style:'gap:8px'});
+    page.appendChild(div({class:'section-title', style:'font-size:clamp(14px,2.4vw,26px)'}, 'Letanías Lauretanas'));
+    page.appendChild(p({style:'font-size:clamp(9px,1.3vw,13px);color:var(--gold);font-style:italic;margin-bottom:4px'}, 'R. Ruega por nosotros'));
+    const SHOW=9, start=Math.max(0,li-3), end=Math.min(lets.length,start+SHOW);
+    const list = div({class:'let-list'});
+    for(let i=start;i<end;i++){
+      const activa=i===li, marcada=i<li;
+      const row = div({class:'let-row'+(activa?' activa':'')});
+      const marker = div({class:'let-marker'+(marcada||activa?' on':'')});
+      const inv = span({class:'let-inv', style:activa?'color:var(--goldL);font-weight:600':''}, lets[i].v);
+      row.appendChild(marker); row.appendChild(inv);
+      if(activa){ row.appendChild(span({class:'let-resp'}, lets[i].r)); }
+      list.appendChild(row);
+    }
+    page.appendChild(list);
+    const barWrap = div({style:'display:flex;align-items:center;gap:6px;margin-top:4px;width:100%;max-width:min(900px,94vw)'});
+    const fill = div({style:'height:3px;border-radius:2px;background:var(--gold);flex:'+(li+1)});
+    const empty = div({style:'height:3px;border-radius:2px;background:var(--navy3);flex:'+(lets.length-li-1)});
+    const lbl = span({style:'font-size:11px;color:var(--gray);margin-left:4px;flex-shrink:0'}, (li+1)+'/'+lets.length);
+    barWrap.appendChild(fill); barWrap.appendChild(empty); barWrap.appendChild(lbl);
+    page.appendChild(barWrap);
+    setMain(page);
     return;
   }
 
   if(s.type==='oracion-final'){
-    tbar.style.background='#1a2c1a'; tbar.textContent='Oración Final';
-    bbar.textContent='❆ Deo Gratias ❆';
-    app.innerHTML=`
-    <div class="screen active" style="gap:12px">
-      <div style="width:clamp(18px,3vw,32px);height:clamp(24px,4.5vw,42px);position:relative">
-        <div style="position:absolute;left:50%;top:0;transform:translateX(-50%);width:30%;height:100%;background:var(--gold)"></div>
-        <div style="position:absolute;top:36%;left:0;right:0;height:28%;background:var(--gold)"></div>
-      </div>
-      <div class="section-title">Bajo Tu Amparo</div>
-      <div class="divider"></div>
-      <p class="prayer-text" style="text-align:center;font-family:Georgia,serif;font-size:clamp(13px,2.1vw,24px);line-height:1.7">${DATA.oraciones.oracionFinal}</p>
-      <div class="divider" style="opacity:.3"></div>
-      <p style="font-size:clamp(11px,1.8vw,20px);color:var(--goldL);font-style:italic;text-align:center;margin-top:8px">Deo Gratias</p>
-      <button class="btn-ghost" onclick="reiniciar()" style="margin-top:16px">Rezar de nuevo</button>
-    </div>`;
+    setUI('#1a2c1a','Oración Final','✦ Deo Gratias ✦', true);
+    const page = div({class:'page centered', style:'gap:12px'});
+    page.appendChild(cross());
+    page.appendChild(div({class:'section-title'}, 'Bajo Tu Amparo'));
+    page.appendChild(divider());
+    page.appendChild(p({class:'prayer-text', style:'text-align:center;font-family:Georgia,serif;font-size:clamp(13px,2vw,22px);line-height:1.7', html:O.oracionFinal}));
+    setMain(page);
+    return;
+  }
+
+  if(s.type==='cierre-final'){
+    setUI('transparent','','✦ Deo Gratias ✦', true);
+    const page = div({class:'page centered', style:'gap:14px'});
+    page.appendChild(cross());
+    page.appendChild(div({class:'section-title'}, 'Ave María Purísima'));
+    page.appendChild(divider());
+    page.appendChild(p({class:'prayer-text', style:'text-align:center;font-family:Georgia,serif;font-size:clamp(16px,2.8vw,30px);line-height:1.8;color:var(--goldL);font-style:italic'}, 'R. Sin pecado concebida.'));
+    page.appendChild(divider('opacity:.3'));
+    const cierre = p({class:'prayer-text', style:'text-align:center;font-size:clamp(13px,2vw,22px);line-height:2', html:'En el nombre del Padre,<br>y del Hijo,<br>y del Espíritu Santo.<br><span style="color:var(--goldL);font-weight:bold">Amén.</span>'});
+    page.appendChild(cierre);
+    page.appendChild(divider('opacity:.2'));
+    const btn = document.createElement('button');
+    btn.className = 'btn-ghost';
+    btn.textContent = 'Rezar de nuevo';
+    btn.onclick = reiniciar;
+    page.appendChild(btn);
+    setMain(page);
     return;
   }
 }
 
-function elegirTipo(t){
-  buildSteps(t);
-  cur=1;
-  render();
-}
-
-function reiniciar(){
-  cur=0; buildSteps(tipo); render();
-}
-
-function irAlInicio(){
-  cur=0; render();
-}
-
+// ── Navigation ─────────────────────────────────────────────────────────────
 function advance(){
-  const s=steps[cur];
-
-  if(s.type==='decenio'){
-    const cnt=s.cuenta||0;
-    if(cnt<10){steps[cur]={...s,cuenta:cnt+1};render();return;}
-  }
-  if(s.type==='intenciones'){
-    const st=s.step||0;
-    if(st<4){steps[cur]={...s,step:st+1};render();return;}
-  }
-  if(s.type==='letanias'){
-    const li=s.letIdx||0;
-    if(li<DATA.oraciones.letanias.length-1){steps[cur]={...s,letIdx:li+1};render();return;}
-  }
-
-  if(cur<steps.length-1){cur++;render();}
+  const s = steps[cur];
+  if(s.type==='decenio' && (s.cuenta||0)<10){ steps[cur]={...s,cuenta:(s.cuenta||0)+1}; render(); return; }
+  if(s.type==='intenciones' && (s.step||0)<4){ steps[cur]={...s,step:(s.step||0)+1}; render(); return; }
+  if(s.type==='letanias' && (s.letIdx||0)<DATA.oraciones.letanias.length-1){ steps[cur]={...s,letIdx:(s.letIdx||0)+1}; render(); return; }
+  if(cur<steps.length-1){ cur++; render(); }
 }
 
 function goBack(){
-  const s=steps[cur];
-  if(s.type==='decenio'&&(s.cuenta||0)>0){steps[cur]={...s,cuenta:(s.cuenta||0)-1};render();return;}
-  if(s.type==='intenciones'&&(s.step||0)>0){steps[cur]={...s,step:(s.step||0)-1};render();return;}
-  if(s.type==='letanias'&&(s.letIdx||0)>0){steps[cur]={...s,letIdx:(s.letIdx||0)-1};render();return;}
-  if(cur>0){cur--;render();}
+  const s = steps[cur];
+  if(s.type==='decenio' && (s.cuenta||0)>0){ steps[cur]={...s,cuenta:(s.cuenta||0)-1}; render(); return; }
+  if(s.type==='intenciones' && (s.step||0)>0){ steps[cur]={...s,step:(s.step||0)-1}; render(); return; }
+  if(s.type==='letanias' && (s.letIdx||0)>0){ steps[cur]={...s,letIdx:(s.letIdx||0)-1}; render(); return; }
+  if(cur>0){ cur--; render(); }
 }
 
-// ─── Keyboard ───────────────────────────────────────────────────────────────
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key===' '||e.key==='Enter')advance();
-  else if(e.key==='ArrowLeft')goBack();
-});
+function elegirTipo(t){ buildSteps(t); cur=1; render(); }
+function reiniciar(){ cur=0; buildSteps(tipo); render(); }
+function irAlInicio(){ cur=0; render(); }
 
-// ─── Touch / Swipe ──────────────────────────────────────────────────────────
-let tx0=0,ty0=0;
-document.addEventListener('touchstart',e=>{tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;},{passive:true});
+// ── Input ──────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='Enter') advance();
+  else if(e.key==='ArrowLeft') goBack();
+});
+let tx=0,ty=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchend',e=>{
-  const dx=e.changedTouches[0].clientX-tx0;
-  const dy=e.changedTouches[0].clientY-ty0;
-  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40){dx<0?advance():goBack();}
-  else if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>40){dy<0?advance():goBack();}
+  const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40){ dx<0?advance():goBack(); }
+  else if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>40){ dy<0?advance():goBack(); }
 });
-
-// ─── Click avance ────────────────────────────────────────────────────────────
 document.addEventListener('click',e=>{
-  if(e.target.closest('button')||e.target.closest('.tipo-btn'))return;
+  if(e.target.closest('button')) return;
   advance();
 });
 
-// ─── Init ────────────────────────────────────────────────────────────────────
+// ── Init ───────────────────────────────────────────────────────────────────
 buildSteps(detectarTipo());
 render();
 </script>
