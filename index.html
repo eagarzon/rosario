@@ -226,6 +226,7 @@ function buildSteps(t){
   steps.push({type:'letanias',letIdx:0});
   steps.push({type:'letanias-cierre'});
   steps.push({type:'oracion-final'});
+  steps.push({type:'cierre-final'});
 }
 
 function totalScreens(){return steps.length;}
@@ -282,12 +283,9 @@ function render(){
         ${['Gozosos','Luminosos','Dolorosos','Gloriosos'].map(t=>{
           const m=DATA.misterios[t];
           const esHoy=t===hoy;
-          return `<button class="tipo-btn" style="background:${m.ac};${esHoy?`outline:3px solid ${m.acL};outline-offset:2px`:''}" onclick="elegirTipo('${t}')">
-            <span class="tname">${t}</span>
-            <span class="tdays">${m.dias}</span>
-            ${esHoy?`<span style="font-size:clamp(8px,1.1vw,11px);background:rgba(255,255,255,.25);border-radius:4px;padding:1px 6px;color:#fff;margin-top:2px">hoy ✓</span>`:''}
-          </button>`;
-        }).join('')}
+          const outline=esHoy?'outline:3px solid '+m.acL+';outline-offset:2px':'';
+          const badge=esHoy?'<span style="font-size:10px;background:rgba(255,255,255,.25);border-radius:4px;padding:1px 6px;color:#fff">hoy ✓</span>':'';
+          return '<button class="tipo-btn" style="background:'+m.ac+';'+outline+'" onclick="elegirTipo(\''+t+'\')">'+'<span class="tname">'+t+'</span>'+'<span class="tdays">'+m.dias+'</span>'+badge+'</button>';
       </div>
     </div>`;
     return;
@@ -558,9 +556,26 @@ function render(){
     return;
   }
 
+  if(s.type==='cierre-final'){
+    tbar.style.background='transparent'; tbar.textContent='';
+    bbar.textContent='❆ Deo Gratias ❆';
+    app.innerHTML=`
+    <div class="screen active" style="gap:16px">
+      <div class="cross"></div>
+      <div class="section-title">Ave María Purísima</div>
+      <div class="divider"></div>
+      <p class="prayer-text" style="text-align:center;font-family:Georgia,serif;font-size:clamp(16px,2.8vw,32px);line-height:1.8;color:var(--goldL);font-style:italic">R. Sin pecado concebida.</p>
+      <div class="divider" style="opacity:.3"></div>
+      <p class="prayer-text" style="text-align:center;font-size:clamp(13px,2vw,22px);line-height:1.9">En el nombre del Padre,<br>y del Hijo,<br>y del Espíritu Santo.<br><span style="color:var(--goldL);font-weight:bold">Amén.</span></p>
+      <div class="divider" style="opacity:.2"></div>
+      <button class="btn-ghost" onclick="reiniciar()" style="margin-top:8px">Rezar de nuevo</button>
+    </div>`;
+    return;
+  }
+
   if(s.type==='oracion-final'){
     tbar.style.background='#1a2c1a'; tbar.textContent='Oración Final';
-    bbar.textContent='✦ Deo Gratias ✦';
+    bbar.textContent='❆ Deo Gratias ❆';
     app.innerHTML=`
     <div class="screen active" style="gap:12px">
       <div style="width:clamp(18px,3vw,32px);height:clamp(24px,4.5vw,42px);position:relative">
